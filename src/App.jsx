@@ -8,6 +8,8 @@ function App() {
  const [amount, setAmount] = useState("")
  const [category, setCategory] = useState("")
  const [date, setDate] = useState("")
+ const [search, setSearch] = useState("")
+ const [searchInput,setSearchInput] = useState("")
 
  function handleAddExpenses(){
     if (name === "" || amount === "" || category === "" || date === ""){
@@ -39,10 +41,16 @@ function App() {
   localStorage.setItem("expenses", JSON.stringify(expenses))
   }, [expenses])
 
+ const filteredExpenses = expenses.filter((expense) => expense.name.toLowerCase().includes(search.toLowerCase()))
+
   return(
    <>
       <div>
         <h1>Expense Tracker</h1>
+      </div>
+      <div>
+        <input type="text" placeholder="search.." value={searchInput} onChange={(event)=> setSearchInput(event.target.value)}/>
+        <button onClick={()=> setSearch(searchInput)}>SEARCH</button>
       </div>
       <div>
         <input type="text" placeholder="Expense Name" value={name} onChange={(event)=> setName(event.target.value)} />
@@ -54,7 +62,9 @@ function App() {
       <h2>Total Expenses: {expenses.length}</h2>
       <h2>Total Spent: ${totalSpent}</h2>
       
-     {expenses.map((expense) => (
+     {expenses.length === 0 ?(<p>No expenses added yet</p>):
+     filteredExpenses.length === 0 ?(<p>No results found</p>):
+     (filteredExpenses.map((expense) => (
        <div key={expense.id}>
          <p>{expense.name}</p>
          <p>{expense.amount}</p>
@@ -62,7 +72,7 @@ function App() {
          <p>{expense.date}</p>
          <button onClick={()=> handleDeleteExpenses(expense.id)}>Delete</button>
         </div>
-      ))}
+      )))}
    </>
   )
 }
