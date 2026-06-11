@@ -12,6 +12,7 @@ function App() {
  const [searchInput,setSearchInput] = useState("")
  const [selectedCategory, setSelectedCategory] = useState("All")
  const [editId, setEditId] = useState(null)
+ const [sortBy, setSortBy] = useState("default")
 
  function handleAddExpenses() {
   if (name === "" || amount === "" || category === "" || date === "") {
@@ -69,6 +70,25 @@ function App() {
  const filteredExpenses = expenses.filter((expense) => {const matchesSearch = expense.name.toLowerCase().includes(search.toLowerCase())
   const matchesCategory = selectedCategory === "All" || expense.category === selectedCategory 
   return matchesSearch && matchesCategory})
+   .sort((a, b) => {
+    if (sortBy === "amountHigh") {
+      return Number(b.amount) - Number(a.amount)
+    }
+
+    if (sortBy === "amountLow") {
+      return Number(a.amount) - Number(b.amount)
+    }
+
+    if (sortBy === "newest") {
+      return new Date(b.date) - new Date(a.date)
+    }
+
+    if (sortBy === "oldest") {
+      return new Date(a.date) - new Date(b.date)
+    }
+
+    return 0
+  })
 
  const categories = [ "All",...new Set(expenses.map((expense) => expense.category))]
 
@@ -98,6 +118,16 @@ function App() {
         <button onClick={handleAddExpenses}>{editId ? "Update Expense" : "Add Expense"}</button>
       </div>
       <div>{categories.map((category) => (<button key={category} onClick={() => setSelectedCategory(category)}>{category}</button>))} </div>
+      <select
+        value={sortBy}
+        onChange={(event) => setSortBy(event.target.value)}
+      >
+        <option value="default">Default</option>
+        <option value="amountHigh">Amount High → Low</option>
+        <option value="amountLow">Amount Low → High</option>
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        </select>
       <h2>Total Expenses: {expenses.length}</h2>
       <h2>Total Spent: ${totalSpent}</h2>
       
