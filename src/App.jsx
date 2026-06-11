@@ -1,149 +1,208 @@
 import { useEffect, useState } from "react"
+import "./App.css"
 
 function App() {
+  const [expenses, setExpenses] = useState(() => {
+    const savedExpenses = localStorage.getItem("expenses")
+    return savedExpenses ? JSON.parse(savedExpenses) : []
+  })
+  const [name, setName] = useState("")
+  const [amount, setAmount] = useState("")
+  const [category, setCategory] = useState("")
+  const [date, setDate] = useState("")
+  const [search, setSearch] = useState("")
+  const [searchInput, setSearchInput] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [editId, setEditId] = useState(null)
+  const [sortBy, setSortBy] = useState("default")
 
- const [expenses, setExpenses] = useState(() => { const savedExpenses = localStorage.getItem("expenses") 
-  return savedExpenses ? JSON.parse(savedExpenses) : [] })
- const [name, setName] = useState("")
- const [amount, setAmount] = useState("")
- const [category, setCategory] = useState("")
- const [date, setDate] = useState("")
- const [search, setSearch] = useState("")
- const [searchInput,setSearchInput] = useState("")
- const [selectedCategory, setSelectedCategory] = useState("All")
- const [editId, setEditId] = useState(null)
- const [sortBy, setSortBy] = useState("default")
+  function handleAddExpenses() {
+    if (name === "" || amount === "" || category === "" || date === "") {
+      alert("Please fill all fields")
+      return
+    }
 
- function handleAddExpenses() {
-  if (name === "" || amount === "" || category === "" || date === "") {
-    alert("Please fill all fields")
-    return
-  }
+    if (editId !== null) {
+      const updatedExpenses = expenses.map((expense) =>
+        expense.id === editId
+          ? {
+              ...expense,
+              name,
+              amount,
+              category,
+              date,
+            }
+          : expense
+      )
 
-  if (editId !== null) {const updatedExpenses = expenses.map((expense) =>expense.id === editId ? 
-    {
-      ...expense,
+      setExpenses(updatedExpenses)
+      setEditId(null)
+      setName("")
+      setAmount("")
+      setCategory("")
+      setDate("")
+
+      return
+    }
+
+    const newExpense = {
+      id: Date.now(),
       name,
       amount,
       category,
       date,
     }
-    : expense
-    )
 
-    setExpenses(updatedExpenses)
-
-    setEditId(null)
+    setExpenses([...expenses, newExpense])
     setName("")
     setAmount("")
     setCategory("")
     setDate("")
-
-    return
   }
 
-  const newExpense = {
-    id: Date.now(),
-    name,
-    amount,
-    category,
-    date,
-  }
-
-  setExpenses([...expenses, newExpense])
-
-  setName("")
-  setAmount("")
-  setCategory("")
-  setDate("")
-}
-  function handleDeleteExpenses(id){
-    const updatedExpenses = expenses.filter((expense) => expense.id !== id )
+  function handleDeleteExpenses(id) {
+    const updatedExpenses = expenses.filter((expense) => expense.id !== id)
     setExpenses(updatedExpenses)
   }
-  const totalSpent = expenses.reduce((total,expense)=> {return total + Number(expense.amount)},0)
+
+  const totalSpent = expenses.reduce((total, expense) => {
+    return total + Number(expense.amount)
+  }, 0)
 
   useEffect(() => {
-  localStorage.setItem("expenses", JSON.stringify(expenses))
+    localStorage.setItem("expenses", JSON.stringify(expenses))
   }, [expenses])
 
- const filteredExpenses = expenses.filter((expense) => {const matchesSearch = expense.name.toLowerCase().includes(search.toLowerCase())
-  const matchesCategory = selectedCategory === "All" || expense.category === selectedCategory 
-  return matchesSearch && matchesCategory})
-   .sort((a, b) => {
-    if (sortBy === "amountHigh") {
-      return Number(b.amount) - Number(a.amount)
-    }
+  const filteredExpenses = expenses
+    .filter((expense) => {
+      const matchesSearch = expense.name.toLowerCase().includes(search.toLowerCase())
+      const matchesCategory = selectedCategory === "All" || expense.category === selectedCategory
+      return matchesSearch && matchesCategory
+    })
+    .sort((a, b) => {
+      if (sortBy === "amountHigh") {
+        return Number(b.amount) - Number(a.amount)
+      }
 
-    if (sortBy === "amountLow") {
-      return Number(a.amount) - Number(b.amount)
-    }
+      if (sortBy === "amountLow") {
+        return Number(a.amount) - Number(b.amount)
+      }
 
-    if (sortBy === "newest") {
-      return new Date(b.date) - new Date(a.date)
-    }
+      if (sortBy === "newest") {
+        return new Date(b.date) - new Date(a.date)
+      }
 
-    if (sortBy === "oldest") {
-      return new Date(a.date) - new Date(b.date)
-    }
+      if (sortBy === "oldest") {
+        return new Date(a.date) - new Date(b.date)
+      }
 
-    return 0
-  })
+      return 0
+    })
 
- const categories = [ "All",...new Set(expenses.map((expense) => expense.category))]
+  const categories = ["All", ...new Set(expenses.map((expense) => expense.category))]
 
- function handleEditExpense(expense) {
-  setName(expense.name)
-  setAmount(expense.amount)
-  setCategory(expense.category)
-  setDate(expense.date)
+  function handleEditExpense(expense) {
+    setName(expense.name)
+    setAmount(expense.amount)
+    setCategory(expense.category)
+    setDate(expense.date)
+    setEditId(expense.id)
+  }
 
-  setEditId(expense.id)
- }
-
-  return(
-   <>
-      <div>
-        <h1>Expense Tracker</h1>
-      </div>
-      <div>
-        <input type="text" placeholder="search.." value={searchInput} onChange={(event)=> setSearchInput(event.target.value)}/>
-        <button onClick={()=> setSearch(searchInput)}>SEARCH</button>
-      </div>
-      <div>
-        <input type="text" placeholder="Expense Name" value={name} onChange={(event)=> setName(event.target.value)} />
-        <input type="number" placeholder="Amount" value={amount} onChange={(event)=> setAmount(event.target.value)} />
-        <input type="text" placeholder="Category" value={category} onChange={(event)=> setCategory(event.target.value)} />
-        <input type="date" value={date} onChange={(event)=> setDate(event.target.value)} />
-        <button onClick={handleAddExpenses}>{editId ? "Update Expense" : "Add Expense"}</button>
-      </div>
-      <div>{categories.map((category) => (<button key={category} onClick={() => setSelectedCategory(category)}>{category}</button>))} </div>
-      <select
-        value={sortBy}
-        onChange={(event) => setSortBy(event.target.value)}
-      >
-        <option value="default">Default</option>
-        <option value="amountHigh">Amount High → Low</option>
-        <option value="amountLow">Amount Low → High</option>
-        <option value="newest">Newest First</option>
-        <option value="oldest">Oldest First</option>
-        </select>
-      <h2>Total Expenses: {expenses.length}</h2>
-      <h2>Total Spent: ${totalSpent}</h2>
-      
-     {expenses.length === 0 ?(<p>No expenses added yet</p>):
-     filteredExpenses.length === 0 ?(<p>No results found</p>):
-     (filteredExpenses.map((expense) => (
-       <div key={expense.id}>
-         <p>{expense.name}</p>
-         <p>{expense.amount}</p>
-         <p>{expense.category}</p>
-         <p>{expense.date}</p>
-         <button onClick={() => handleEditExpense(expense)}> Edit </button>
-         <button onClick={()=> handleDeleteExpenses(expense.id)}>Delete</button>
+  return (
+    <main className="app-shell">
+      <section className="hero-panel">
+        <div>
+          <p className="eyebrow">Personal finance</p>
+          <h1>Expense Tracker</h1>
+          <p className="hero-copy">Track spending, filter by category, and keep your budget visible.</p>
         </div>
-      )))}
-   </>
+
+        <div className="summary-grid" aria-label="Expense summary">
+          <article className="summary-card">
+            <span>Total expenses</span>
+            <strong>{expenses.length}</strong>
+          </article>
+          <article className="summary-card highlight">
+            <span>Total spent</span>
+            <strong>${totalSpent.toFixed(2)}</strong>
+          </article>
+        </div>
+      </section>
+
+      <section className="toolbar" aria-label="Search and sort expenses">
+        <div className="search-group">
+          <input
+            type="text"
+            placeholder="Search expenses"
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+          />
+          <button className="secondary-button" onClick={() => setSearch(searchInput)}>
+            Search
+          </button>
+        </div>
+
+        <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} aria-label="Sort expenses">
+          <option value="default">Default</option>
+          <option value="amountHigh">Amount high to low</option>
+          <option value="amountLow">Amount low to high</option>
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+      </section>
+
+      <section className="form-panel" aria-label="Add or edit expense">
+        <input type="text" placeholder="Expense name" value={name} onChange={(event) => setName(event.target.value)} />
+        <input type="number" placeholder="Amount" value={amount} onChange={(event) => setAmount(event.target.value)} />
+        <input type="text" placeholder="Category" value={category} onChange={(event) => setCategory(event.target.value)} />
+        <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+        <button className="primary-button" onClick={handleAddExpenses}>
+          {editId ? "Update Expense" : "Add Expense"}
+        </button>
+      </section>
+
+      <section className="category-row" aria-label="Expense categories">
+        {categories.map((category) => (
+          <button
+            key={category}
+            className={selectedCategory === category ? "category-chip active" : "category-chip"}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </section>
+
+      <section className="expense-list" aria-label="Expense list">
+        {expenses.length === 0 ? (
+          <p className="empty-state">No expenses added yet</p>
+        ) : filteredExpenses.length === 0 ? (
+          <p className="empty-state">No results found</p>
+        ) : (
+          filteredExpenses.map((expense) => (
+            <article className="expense-card" key={expense.id}>
+              <div className="expense-main">
+                <p className="expense-name">{expense.name}</p>
+                <p className="expense-meta">
+                  {expense.category} / {expense.date}
+                </p>
+              </div>
+              <p className="expense-amount">${Number(expense.amount).toFixed(2)}</p>
+              <div className="expense-actions">
+                <button className="ghost-button" onClick={() => handleEditExpense(expense)}>
+                  Edit
+                </button>
+                <button className="danger-button" onClick={() => handleDeleteExpenses(expense.id)}>
+                  Delete
+                </button>
+              </div>
+            </article>
+          ))
+        )}
+      </section>
+    </main>
   )
 }
+
 export default App
