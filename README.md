@@ -1,18 +1,48 @@
-# React + Vite
+                      💰 Spendifi - Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Live Demo: https://spendifi.netlify.app/
 
-Currently, two official plugins are available:
+     📖 About
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Spendifi is a modern expense tracking application built with React. It helps users track their spending, organize expenses by category, search transactions, and analyze their expenses with an intuitive interface.
 
-## React Compiler
+             ✨ Features
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+➕ Add new expenses
+✏️ Edit existing expenses
+🗑️ Delete expenses
+🔍 Search expenses by name
+🏷️ Filter expenses by category
+📊 Sort expenses by:
+Amount (High → Low)
+Amount (Low → High)
+Newest First
+Oldest First
+💵 Total spending calculation
+📈 Total expense count
+💾 Data persistence using Local Storage
+📱 Responsive and modern UI
+⚡ Instant updates without page reload
 
-Note: This will impact Vite dev & build performances.
+               🛠️ Built With
 
-## Expanding the ESLint configuration
+React
+JavaScript (ES6+)
+CSS3
+HTML5
+Local Storage API
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+             🧠 Concepts Practiced
+
+React Hooks (useState, useEffect)
+CRUD Operations
+Conditional Rendering
+Event Handling
+Controlled Components
+Array Methods (map, filter, reduce, sort)
+Local Storage Integration
+State Management
+Dynamic UI Rendering
+
+👨‍💻 Author
+Jeffrey
