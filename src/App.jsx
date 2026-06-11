@@ -28,6 +28,10 @@ function App() {
     setDate("")
 
   }
+  function handleDeleteExpenses(id){
+    const updatedExpenses = expenses.filter((expense) => expense.id !== id )
+    setExpenses(updatedExpenses)
+  }
 
   return(
    <>
@@ -49,7 +53,7 @@ function App() {
          <p>{expense.amount}</p>
          <p>{expense.category}</p>
          <p>{expense.date}</p>
-         <button>Delete</button>
+         <button onClick={()=> handleDeleteExpenses(expense.id)}>Delete</button>
         </div>
       ))}
    </>
