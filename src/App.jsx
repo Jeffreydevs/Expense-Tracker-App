@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 function App() {
 
- const [expenses, setExpenses] = useState([])
+ const [expenses, setExpenses] = useState(() => { const savedExpenses = localStorage.getItem("expenses") 
+  return savedExpenses ? JSON.parse(savedExpenses) : [] })
  const [name, setName] = useState("")
  const [amount, setAmount] = useState("")
  const [category, setCategory] = useState("")
@@ -33,6 +34,10 @@ function App() {
     setExpenses(updatedExpenses)
   }
   const totalSpent = expenses.reduce((total,expense)=> {return total + Number(expense.amount)},0)
+
+  useEffect(() => {
+  localStorage.setItem("expenses", JSON.stringify(expenses))
+  }, [expenses])
 
   return(
    <>
