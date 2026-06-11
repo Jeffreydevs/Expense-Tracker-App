@@ -32,6 +32,7 @@ function App() {
     const updatedExpenses = expenses.filter((expense) => expense.id !== id )
     setExpenses(updatedExpenses)
   }
+  const totalSpent = expenses.reduce((total,expense)=> {return total + Number(expense.amount)},0)
 
   return(
    <>
@@ -46,6 +47,7 @@ function App() {
         <button onClick={handleAddExpenses}>Add Expense</button>
       </div>
       <h2>Total Expenses: {expenses.length}</h2>
+      <h2>Total Spent: ${totalSpent}</h2>
       
      {expenses.map((expense) => (
        <div key={expense.id}>
