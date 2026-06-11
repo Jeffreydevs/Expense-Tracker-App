@@ -10,6 +10,7 @@ function App() {
  const [date, setDate] = useState("")
  const [search, setSearch] = useState("")
  const [searchInput,setSearchInput] = useState("")
+ const [selectedCategory, setSelectedCategory] = useState("All")
 
  function handleAddExpenses(){
     if (name === "" || amount === "" || category === "" || date === ""){
@@ -41,7 +42,11 @@ function App() {
   localStorage.setItem("expenses", JSON.stringify(expenses))
   }, [expenses])
 
- const filteredExpenses = expenses.filter((expense) => expense.name.toLowerCase().includes(search.toLowerCase()))
+ const filteredExpenses = expenses.filter((expense) => {const matchesSearch = expense.name.toLowerCase().includes(search.toLowerCase())
+  const matchesCategory = selectedCategory === "All" || expense.category === selectedCategory 
+  return matchesSearch && matchesCategory})
+
+ const categories = [ "All",...new Set(expenses.map((expense) => expense.category))]
 
   return(
    <>
@@ -59,6 +64,7 @@ function App() {
         <input type="date" value={date} onChange={(event)=> setDate(event.target.value)} />
         <button onClick={handleAddExpenses}>Add Expense</button>
       </div>
+      <div>{categories.map((category) => (<button key={category} onClick={() => setSelectedCategory(category)}>{category}</button>))} </div>
       <h2>Total Expenses: {expenses.length}</h2>
       <h2>Total Spent: ${totalSpent}</h2>
       
