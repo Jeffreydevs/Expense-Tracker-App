@@ -11,27 +11,51 @@ function App() {
  const [search, setSearch] = useState("")
  const [searchInput,setSearchInput] = useState("")
  const [selectedCategory, setSelectedCategory] = useState("All")
+ const [editId, setEditId] = useState(null)
 
- function handleAddExpenses(){
-    if (name === "" || amount === "" || category === "" || date === ""){
-      alert("Please fill all fields")
-      return
-    }
-    const newExpense = {
-    id: Date.now(),
-    name,
-    amount,
-    category,
-    date
-    }
-    setExpenses([...expenses,newExpense])
+ function handleAddExpenses() {
+  if (name === "" || amount === "" || category === "" || date === "") {
+    alert("Please fill all fields")
+    return
+  }
 
+  if (editId !== null) {const updatedExpenses = expenses.map((expense) =>expense.id === editId ? 
+    {
+      ...expense,
+      name,
+      amount,
+      category,
+      date,
+    }
+    : expense
+    )
+
+    setExpenses(updatedExpenses)
+
+    setEditId(null)
     setName("")
     setAmount("")
     setCategory("")
     setDate("")
 
+    return
   }
+
+  const newExpense = {
+    id: Date.now(),
+    name,
+    amount,
+    category,
+    date,
+  }
+
+  setExpenses([...expenses, newExpense])
+
+  setName("")
+  setAmount("")
+  setCategory("")
+  setDate("")
+}
   function handleDeleteExpenses(id){
     const updatedExpenses = expenses.filter((expense) => expense.id !== id )
     setExpenses(updatedExpenses)
@@ -48,6 +72,15 @@ function App() {
 
  const categories = [ "All",...new Set(expenses.map((expense) => expense.category))]
 
+ function handleEditExpense(expense) {
+  setName(expense.name)
+  setAmount(expense.amount)
+  setCategory(expense.category)
+  setDate(expense.date)
+
+  setEditId(expense.id)
+ }
+
   return(
    <>
       <div>
@@ -62,7 +95,7 @@ function App() {
         <input type="number" placeholder="Amount" value={amount} onChange={(event)=> setAmount(event.target.value)} />
         <input type="text" placeholder="Category" value={category} onChange={(event)=> setCategory(event.target.value)} />
         <input type="date" value={date} onChange={(event)=> setDate(event.target.value)} />
-        <button onClick={handleAddExpenses}>Add Expense</button>
+        <button onClick={handleAddExpenses}>{editId ? "Update Expense" : "Add Expense"}</button>
       </div>
       <div>{categories.map((category) => (<button key={category} onClick={() => setSelectedCategory(category)}>{category}</button>))} </div>
       <h2>Total Expenses: {expenses.length}</h2>
@@ -76,6 +109,7 @@ function App() {
          <p>{expense.amount}</p>
          <p>{expense.category}</p>
          <p>{expense.date}</p>
+         <button onClick={() => handleEditExpense(expense)}> Edit </button>
          <button onClick={()=> handleDeleteExpenses(expense.id)}>Delete</button>
         </div>
       )))}
