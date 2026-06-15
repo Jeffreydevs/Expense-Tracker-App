@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react"
 import "./App.css"
+import axios from "axios"
 
 function App() {
-  const [expenses, setExpenses] = useState(() => {
-    const savedExpenses = localStorage.getItem("expenses")
-    return savedExpenses ? JSON.parse(savedExpenses) : []
-  })
+  const [expenses, setExpenses] = useState([])
   const [name, setName] = useState("")
   const [amount, setAmount] = useState("")
   const [category, setCategory] = useState("")
@@ -16,23 +14,27 @@ function App() {
   const [editId, setEditId] = useState(null)
   const [sortBy, setSortBy] = useState("default")
 
-  function handleAddExpenses() {
+  async function fetchExpenses() {
+  const res = await axios.get("http://localhost:3000/api/expenses");
+  setExpenses(res.data);
+  }
+  useEffect(() => { fetchExpenses() }, [])
+
+  async function handleAddExpenses() {
     if (name === "" || amount === "" || category === "" || date === "") {
       alert("Please fill all fields")
       return
     }
 
-    if (editId !== null) {
-      const updatedExpenses = expenses.map((expense) =>
-        expense.id === editId
-          ? {
-              ...expense,
-              name,
-              amount,
-              category,
-              date,
-            }
-          : expense
+    if (editId !== null) { const updatedExpenses = expenses.map((expense) => expense._id === editId ? 
+      {
+        ...expense,
+        name,
+        amount,
+        category,
+        date,
+      }
+     : expense
       )
 
       setExpenses(updatedExpenses)
@@ -45,33 +47,29 @@ function App() {
       return
     }
 
-    const newExpense = {
-      id: Date.now(),
+    await axios.post( "http://localhost:3000/api/expenses",{
       name,
       amount,
       category,
-      date,
-    }
-
-    setExpenses([...expenses, newExpense])
+      date, 
+      }
+    )
+    fetchExpenses()
+    
     setName("")
     setAmount("")
     setCategory("")
     setDate("")
   }
 
-  function handleDeleteExpenses(id) {
-    const updatedExpenses = expenses.filter((expense) => expense.id !== id)
-    setExpenses(updatedExpenses)
-  }
+async function handleDeleteExpenses(id) {
+  await axios.delete(`http://localhost:3000/api/expenses/${id}`)
+  fetchExpenses()
+}
 
   const totalSpent = expenses.reduce((total, expense) => {
     return total + Number(expense.amount)
   }, 0)
-
-  useEffect(() => {
-    localStorage.setItem("expenses", JSON.stringify(expenses))
-  }, [expenses])
 
   const filteredExpenses = expenses
     .filter((expense) => {
@@ -101,12 +99,12 @@ function App() {
 
   const categories = ["All", ...new Set(expenses.map((expense) => expense.category))]
 
-  function handleEditExpense(expense) {
+  async function handleEditExpense(expense) {
     setName(expense.name)
     setAmount(expense.amount)
     setCategory(expense.category)
     setDate(expense.date)
-    setEditId(expense.id)
+    setEditId(expense._id)
   }
 
   return (
@@ -181,7 +179,7 @@ function App() {
           <p className="empty-state">No results found</p>
         ) : (
           filteredExpenses.map((expense) => (
-            <article className="expense-card" key={expense.id}>
+            <article className="expense-card" key={expense._id}>
               <div className="expense-main">
                 <p className="expense-name">{expense.name}</p>
                 <p className="expense-meta">
@@ -193,7 +191,7 @@ function App() {
                 <button className="ghost-button" onClick={() => handleEditExpense(expense)}>
                   Edit
                 </button>
-                <button className="danger-button" onClick={() => handleDeleteExpenses(expense.id)}>
+                <button className="danger-button" onClick={() => handleDeleteExpenses(expense._id)}>
                   Delete
                 </button>
               </div>
