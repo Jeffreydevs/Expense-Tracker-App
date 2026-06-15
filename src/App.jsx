@@ -26,26 +26,24 @@ function App() {
       return
     }
 
-    if (editId !== null) { const updatedExpenses = expenses.map((expense) => expense._id === editId ? 
-      {
-        ...expense,
-        name,
-        amount,
-        category,
-        date,
-      }
-     : expense
-      )
+  if (editId !== null) {
+    await axios.put(`http://localhost:3000/api/expenses/${editId}`, {
+      name,
+      amount,
+      category,
+      date,
+    })
 
-      setExpenses(updatedExpenses)
-      setEditId(null)
-      setName("")
-      setAmount("")
-      setCategory("")
-      setDate("")
+    fetchExpenses()
 
-      return
-    }
+    setEditId(null)
+    setName("")
+    setAmount("")
+    setCategory("")
+    setDate("")
+
+    return
+  }
 
     await axios.post( "http://localhost:3000/api/expenses",{
       name,
@@ -112,7 +110,7 @@ async function handleDeleteExpenses(id) {
       <section className="hero-panel">
         <div>
           <p className="eyebrow">Personal finance</p>
-          <h1>Expense Tracker</h1>
+          <h1>SPENDIFI</h1>
           <p className="hero-copy">Track spending, filter by category, and keep your budget visible.</p>
         </div>
 
