@@ -15,7 +15,7 @@ function App() {
   const [sortBy, setSortBy] = useState("default")
 
   async function fetchExpenses() {
-  const res = await axios.get("http://localhost:3000/api/expenses");
+  const res = await axios.get("https://spendifi-backend.onrender.com/api/expenses");
   setExpenses(res.data);
   }
   useEffect(() => { fetchExpenses() }, [])
@@ -27,7 +27,7 @@ function App() {
     }
 
   if (editId !== null) {
-    await axios.put(`http://localhost:3000/api/expenses/${editId}`, {
+    await axios.put(`https://spendifi-backend.onrender.com/api/expenses/${editId}`, {
       name,
       amount,
       category,
@@ -45,7 +45,7 @@ function App() {
     return
   }
 
-    await axios.post( "http://localhost:3000/api/expenses",{
+    await axios.post("https://spendifi-backend.onrender.com/api/expenses", {
       name,
       amount,
       category,
@@ -61,7 +61,7 @@ function App() {
   }
 
 async function handleDeleteExpenses(id) {
-  await axios.delete(`http://localhost:3000/api/expenses/${id}`)
+  await axios.delete(`https://spendifi-backend.onrender.com/api/expenses/${id}`)
   fetchExpenses()
 }
 
