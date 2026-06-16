@@ -1,48 +1,80 @@
-                      💰 Spendifi - Expense Tracker
+# SPENDIFI
 
-Live Demo: https://spendifi.netlify.app/
+SPENDIFI is a modern expense tracker built with React. It helps users add, edit, delete, search, filter, and sort expenses while keeping total spending easy to see.
 
-     📖 About
+## Live Demo
 
-Spendifi is a modern expense tracking application built with React. It helps users track their spending, organize expenses by category, search transactions, and analyze their expenses with an intuitive interface.
+[https://spendifi.netlify.app/](https://spendifi.netlify.app/)
 
-             ✨ Features
+## Features
 
-➕ Add new expenses
-✏️ Edit existing expenses
-🗑️ Delete expenses
-🔍 Search expenses by name
-🏷️ Filter expenses by category
-📊 Sort expenses by:
-Amount (High → Low)
-Amount (Low → High)
-Newest First
-Oldest First
-💵 Total spending calculation
-📈 Total expense count
-💾 Data persistence using Local Storage
-📱 Responsive and modern UI
-⚡ Instant updates without page reload
+- Add new expenses with name, amount, category, and date
+- Edit existing expenses
+- Delete expenses
+- Search expenses by name
+- Filter expenses by category
+- Sort expenses by amount or date
+- View total expense count
+- View total spending
+- Responsive dashboard-style UI
+- Data handled through a backend API
 
-               🛠️ Built With
+## Built With
 
-React
-JavaScript (ES6+)
-CSS3
-HTML5
-Local Storage API
+- React
+- JavaScript
+- CSS
+- HTML
+- Axios
+- Vite
 
-             🧠 Concepts Practiced
+## Backend API
 
-React Hooks (useState, useEffect)
-CRUD Operations
-Conditional Rendering
-Event Handling
-Controlled Components
-Array Methods (map, filter, reduce, sort)
-Local Storage Integration
-State Management
-Dynamic UI Rendering
+The frontend connects to:
 
-👨‍💻 Author
+```txt
+https://spendifi-backend.onrender.com/api/expenses
+```
+
+The app uses this API to fetch, create, update, and delete expenses.
+
+## Concepts Practiced
+
+- React Hooks
+- CRUD operations
+- API requests with Axios
+- Controlled components
+- Conditional rendering
+- Array methods such as `map`, `filter`, `reduce`, and `sort`
+- State management
+- Responsive UI design
+
+## Getting Started
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Run linting:
+
+```bash
+npm run lint
+```
+
+## Author
+
 Jeffrey
