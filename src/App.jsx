@@ -3,6 +3,7 @@ import "./App.css"
 import axios from "axios"
 import Register from "./Register"
 import Login from "./Login"
+const API_URL = "https://spendifi-backend.onrender.com";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -25,8 +26,8 @@ function App() {
 
   async function fetchExpenses() {
    try { setLoading(true); 
-   const token = localStorage.getItem("token");
-   const res = await axios.get("http://localhost:3000/api/expenses", {
+   const token = localStorage.getItem("token");`${API_URL}/api/expenses`
+   const res = await axios.get(, {
     headers: {Authorization: token}
    });
    setExpenses(res.data);
@@ -46,7 +47,7 @@ function App() {
     }
 
    if (editId !== null) {
-    await axios.put(`http://localhost:3000/api/expenses/${editId}`, {
+    await axios.put(`${API_URL}/api/expenses/${editId}`, {
       name, amount, category, date,
     },{ headers: {Authorization: localStorage.getItem("token")}}
     )
@@ -64,7 +65,7 @@ function App() {
     return
    }
 
-    await axios.post("http://localhost:3000/api/expenses", {
+    await axios.post(`${API_URL}/api/expenses`, {
       name,amount,category,date, 
       }, { headers: { Authorization: localStorage.getItem("token") }}
     ) 
@@ -78,7 +79,7 @@ function App() {
   }
 
 async function handleDeleteExpenses(id) {
-  await axios.delete(`http://localhost:3000/api/expenses/${id}`, {
+  await axios.delete(`${API_URL}/api/expenses${id}`, {
     headers: { Authorization: localStorage.getItem("token") }
   })
   fetchExpenses()

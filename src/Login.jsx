@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+const API_URL = "https://spendifi-backend.onrender.com";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -7,7 +8,7 @@ function Login() {
 
   async function handleLogin() {
    try{ 
-    const response = await axios.post("http://localhost:3000/api/auth/login", { email,password });
+    const response = await axios.post(`${API_URL}/api/auth/login`, { email,password });
     localStorage.setItem("token", response.data.token);
     alert("Login successful");
     } 

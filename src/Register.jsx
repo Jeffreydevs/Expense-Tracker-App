@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+const API_URL = "https://spendifi-backend.onrender.com";
 
 function Register() {
   const [name, setName] = useState("");
@@ -7,7 +8,7 @@ function Register() {
   const [password, setPassword] = useState("");
 
   async function handleRegister() {
-    const response = await axios.post("http://localhost:3000/api/auth/register", {name,email,password});
+    const response = await axios.post(`${API_URL}/api/auth/register`, {name,email,password});
     console.log(response.data);
     alert("Registered successfully");
   }
