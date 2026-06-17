@@ -2,10 +2,13 @@ import { useCallback, useEffect, useState } from "react"
 import "./App.css"
 import axios from "axios"
 import Login from "./Login"
+import Register from "./Register"
 const API_URL = "https://spendifi-backend.onrender.com";
 
 function App() {
   const [authToken, setAuthToken] = useState(() => localStorage.getItem("token"))
+  const [authMode, setAuthMode] = useState("login")
+  const [authMessage, setAuthMessage] = useState("")
   const [expenses, setExpenses] = useState([])
   const [name, setName] = useState("")
   const [amount, setAmount] = useState("")
@@ -163,8 +166,24 @@ async function handleDeleteExpenses(id) {
     setEditId(expense._id)
   }
 
+  function handleRegistered(message) {
+    setAuthMessage(message)
+    setAuthMode("login")
+  }
+
   if (!authToken) {
-  return <Login onLogin={setAuthToken} />;
+  return authMode === "register" ? (
+    <Register onShowLogin={() => setAuthMode("login")} onRegistered={handleRegistered} />
+  ) : (
+    <Login
+      onLogin={setAuthToken}
+      onShowRegister={() => {
+        setAuthMessage("")
+        setAuthMode("register")
+      }}
+      initialMessage={authMessage}
+    />
+  );
   }
 
   function handleLogout() {
@@ -175,8 +194,6 @@ async function handleDeleteExpenses(id) {
 
   return (
     <>
-    {/* <Login /> */}
-    {/* <Register /> */}
     <main className="app-shell">
       <header className="app-topbar">
         <div>

@@ -2,10 +2,10 @@ import { useState } from "react";
 import axios from "axios";
 const API_URL = "https://spendifi-backend.onrender.com";
 
-function Login({ onLogin }) {
+function Login({ onLogin, onShowRegister, initialMessage = "" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(initialMessage);
 
   async function handleLogin() {
    try{ 
@@ -31,6 +31,10 @@ function Login({ onLogin }) {
           <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <button className="primary-button" onClick={handleLogin}>Login</button>
         </div>
+        <p className="auth-switch">
+          New to SPENDIFI?
+          <button className="link-button" onClick={onShowRegister}>Create an account</button>
+        </p>
       </section>
     </main>
   );

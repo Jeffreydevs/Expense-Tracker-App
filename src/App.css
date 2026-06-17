@@ -38,6 +38,30 @@
   gap: 12px;
 }
 
+.auth-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.link-button {
+  min-height: auto;
+  padding: 0;
+  background: transparent;
+  color: #0e7490;
+  font-weight: 900;
+}
+
+.link-button:hover {
+  background: transparent;
+  color: #115e59;
+  text-decoration: underline;
+}
+
 .app-topbar {
   display: flex;
   align-items: center;
