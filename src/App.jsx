@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import "./App.css"
 import axios from "axios"
-import Register from "./Register"
 import Login from "./Login"
 const API_URL = "https://spendifi-backend.onrender.com";
 
@@ -26,8 +25,8 @@ function App() {
 
   async function fetchExpenses() {
    try { setLoading(true); 
-   const token = localStorage.getItem("token");`${API_URL}/api/expenses`
-   const res = await axios.get(, {
+   const token = localStorage.getItem("token");
+   const res = await axios.get(`${API_URL}/api/expenses`, {
     headers: {Authorization: token}
    });
    setExpenses(res.data);
@@ -38,7 +37,13 @@ function App() {
     setLoading(false);
     }
   }
-  useEffect(() => { fetchExpenses() }, [])
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchExpenses()
+    }, 0)
+
+    return () => clearTimeout(timeoutId)
+  }, [])
 
   async function handleAddExpenses() {
     if (name === "" || amount === "" || category === "" || date === "") {
@@ -79,7 +84,7 @@ function App() {
   }
 
 async function handleDeleteExpenses(id) {
-  await axios.delete(`${API_URL}/api/expenses${id}`, {
+  await axios.delete(`${API_URL}/api/expenses/${id}`, {
     headers: { Authorization: localStorage.getItem("token") }
   })
   fetchExpenses()
