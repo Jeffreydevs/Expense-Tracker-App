@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import "./App.css"
 import axios from "axios"
+import Register from "./Register"
+import Login from "./Login"
 
 function App() {
   const [expenses, setExpenses] = useState([])
@@ -18,7 +20,7 @@ function App() {
   const res = await axios.get("https://spendifi-backend.onrender.com/api/expenses");
   setExpenses(res.data);
   }
-  useEffect(() => { fetchExpenses() }, [])
+  /* useEffect(() => { fetchExpenses() }, []) */
 
   async function handleAddExpenses() {
     if (name === "" || amount === "" || category === "" || date === "") {
@@ -46,10 +48,7 @@ function App() {
   }
 
     await axios.post("https://spendifi-backend.onrender.com/api/expenses", {
-      name,
-      amount,
-      category,
-      date, 
+      name,amount,category,date, 
       }
     )
     fetchExpenses()
@@ -106,7 +105,10 @@ async function handleDeleteExpenses(id) {
   }
 
   return (
-    <main className="app-shell">
+    <>
+    <Login />
+    {/* <Register /> */}
+{/*     <main className="app-shell">
       <section className="hero-panel">
         <div>
           <p className="eyebrow">Personal finance</p>
@@ -197,7 +199,8 @@ async function handleDeleteExpenses(id) {
           ))
         )}
       </section>
-    </main>
+    </main> */}
+    </>
   )
 }
 
