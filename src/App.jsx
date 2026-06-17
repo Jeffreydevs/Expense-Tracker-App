@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import "./App.css"
 import axios from "axios"
 import Login from "./Login"
 const API_URL = "https://spendifi-backend.onrender.com";
 
 function App() {
-  const token = localStorage.getItem("token");
+  const [authToken, setAuthToken] = useState(() => localStorage.getItem("token"))
   const [expenses, setExpenses] = useState([])
   const [name, setName] = useState("")
   const [amount, setAmount] = useState("")
@@ -23,27 +23,38 @@ function App() {
 
   const maxDate = today.toISOString().split("T")[0];
 
-  async function fetchExpenses() {
+  const fetchExpenses = useCallback(async function fetchExpenses() {
    try { setLoading(true); 
-   const token = localStorage.getItem("token");
    const res = await axios.get(`${API_URL}/api/expenses`, {
-    headers: {Authorization: token}
+    headers: {Authorization: authToken}
    });
    setExpenses(res.data);
     } 
    catch (error) {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token")
+      setAuthToken(null)
+      setExpenses([])
+      setMessage("Please log in again.")
+      return
+    }
+
     alert(error.response?.data?.message || "Failed to load expenses");
     } finally {
     setLoading(false);
     }
-  }
+  }, [authToken])
   useEffect(() => {
+    if (!authToken) {
+      return
+    }
+
     const timeoutId = setTimeout(() => {
       fetchExpenses()
     }, 0)
 
     return () => clearTimeout(timeoutId)
-  }, [])
+  }, [authToken, fetchExpenses])
 
   async function handleAddExpenses() {
     if (name === "" || amount === "" || category === "" || date === "") {
@@ -152,13 +163,14 @@ async function handleDeleteExpenses(id) {
     setEditId(expense._id)
   }
 
-  if (!token) {
-  return <Login />;
+  if (!authToken) {
+  return <Login onLogin={setAuthToken} />;
   }
 
   function handleLogout() {
   localStorage.removeItem("token");
-  window.location.reload();
+  setAuthToken(null)
+  setExpenses([])
   }
 
   return (
