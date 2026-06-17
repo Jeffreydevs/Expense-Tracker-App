@@ -16,19 +16,32 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [editId, setEditId] = useState(null)
   const [sortBy, setSortBy] = useState("default")
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const today = new Date();
+   today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+
+  const maxDate = today.toISOString().split("T")[0];
 
   async function fetchExpenses() {
+   try { setLoading(true); 
    const token = localStorage.getItem("token");
    const res = await axios.get("http://localhost:3000/api/expenses", {
     headers: {Authorization: token}
    });
    setExpenses(res.data);
+    } 
+   catch (error) {
+    alert(error.response?.data?.message || "Failed to load expenses");
+    } finally {
+    setLoading(false);
+    }
   }
   useEffect(() => { fetchExpenses() }, [])
 
   async function handleAddExpenses() {
     if (name === "" || amount === "" || category === "" || date === "") {
-      alert("Please fill all fields")
+      setMessage("Please fill all fields")
       return
     }
 
@@ -39,6 +52,8 @@ function App() {
     )
 
     fetchExpenses()
+
+    setMessage("Expense updated successfully")
 
     setEditId(null)
     setName("")
@@ -52,8 +67,9 @@ function App() {
     await axios.post("http://localhost:3000/api/expenses", {
       name,amount,category,date, 
       }, { headers: { Authorization: localStorage.getItem("token") }}
-    )
+    ) 
     fetchExpenses()
+    setMessage("Expense added successfully")
     
     setName("")
     setAmount("")
@@ -66,6 +82,7 @@ async function handleDeleteExpenses(id) {
     headers: { Authorization: localStorage.getItem("token") }
   })
   fetchExpenses()
+  setMessage("Expense deleted successfully")
 }
 
   const totalSpent = expenses.reduce((total, expense) => {
@@ -144,6 +161,7 @@ async function handleDeleteExpenses(id) {
     {/* <Register /> */}
     <button onClick={handleLogout}> Logout </button>
     <main className="app-shell">
+      {message && <p>{message}</p>}
       <section className="hero-panel">
         <div>
           <p className="eyebrow">Personal finance</p>
@@ -198,7 +216,7 @@ async function handleDeleteExpenses(id) {
         <input type="text" placeholder="Expense name" value={name} onChange={(event) => setName(event.target.value)} />
         <input type="number" placeholder="Amount" value={amount} onChange={(event) => setAmount(event.target.value)} />
         <input type="text" placeholder="Category" value={category} onChange={(event) => setCategory(event.target.value)} />
-        <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+        <input type="date" value={date} onChange={(event) => setDate(event.target.value)} max={maxDate} />
         <button className="primary-button" onClick={handleAddExpenses}>
           {editId ? "Update Expense" : "Add Expense"}
         </button>
@@ -217,7 +235,9 @@ async function handleDeleteExpenses(id) {
       </section>
 
       <section className="expense-list" aria-label="Expense list">
-        {expenses.length === 0 ? (
+        {loading ? (
+          <p className="empty-state">Loading expenses...</p>
+        ) :expenses.length === 0 ? (
           <p className="empty-state">No expenses added yet</p>
         ) : filteredExpenses.length === 0 ? (
           <p className="empty-state">No results found</p>
