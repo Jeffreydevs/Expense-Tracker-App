@@ -177,9 +177,16 @@ async function handleDeleteExpenses(id) {
     <>
     {/* <Login /> */}
     {/* <Register /> */}
-    <button onClick={handleLogout}> Logout </button>
     <main className="app-shell">
-      {message && <p>{message}</p>}
+      <header className="app-topbar">
+        <div>
+          <p className="topbar-kicker">Dashboard</p>
+          <strong>SPENDIFI</strong>
+        </div>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
+      </header>
+
+      {message && <p className="notice">{message}</p>}
       <section className="hero-panel">
         <div>
           <p className="eyebrow">Personal finance</p>
