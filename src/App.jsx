@@ -17,10 +17,13 @@ function App() {
   const [sortBy, setSortBy] = useState("default")
 
   async function fetchExpenses() {
-  const res = await axios.get("https://spendifi-backend.onrender.com/api/expenses");
-  setExpenses(res.data);
+   const token = localStorage.getItem("token");
+   const res = await axios.get("http://localhost:3000/api/expenses", {
+    headers: {Authorization: token}
+   });
+   setExpenses(res.data);
   }
-  /* useEffect(() => { fetchExpenses() }, []) */
+  useEffect(() => { fetchExpenses() }, [])
 
   async function handleAddExpenses() {
     if (name === "" || amount === "" || category === "" || date === "") {
@@ -28,13 +31,11 @@ function App() {
       return
     }
 
-  if (editId !== null) {
-    await axios.put(`https://spendifi-backend.onrender.com/api/expenses/${editId}`, {
-      name,
-      amount,
-      category,
-      date,
-    })
+   if (editId !== null) {
+    await axios.put(`http://localhost:3000/api/expenses/${editId}`, {
+      name, amount, category, date,
+    },{ headers: {Authorization: localStorage.getItem("token")}}
+    )
 
     fetchExpenses()
 
@@ -45,11 +46,11 @@ function App() {
     setDate("")
 
     return
-  }
+   }
 
-    await axios.post("https://spendifi-backend.onrender.com/api/expenses", {
+    await axios.post("http://localhost:3000/api/expenses", {
       name,amount,category,date, 
-      }
+      }, { headers: { Authorization: localStorage.getItem("token") }}
     )
     fetchExpenses()
     
@@ -60,7 +61,9 @@ function App() {
   }
 
 async function handleDeleteExpenses(id) {
-  await axios.delete(`https://spendifi-backend.onrender.com/api/expenses/${id}`)
+  await axios.delete(`http://localhost:3000/api/expenses/${id}`, {
+    headers: { Authorization: localStorage.getItem("token") }
+  })
   fetchExpenses()
 }
 
@@ -106,9 +109,9 @@ async function handleDeleteExpenses(id) {
 
   return (
     <>
-    <Login />
+    {/* <Login /> */}
     {/* <Register /> */}
-{/*     <main className="app-shell">
+    <main className="app-shell">
       <section className="hero-panel">
         <div>
           <p className="eyebrow">Personal finance</p>
@@ -199,7 +202,7 @@ async function handleDeleteExpenses(id) {
           ))
         )}
       </section>
-    </main> */}
+    </main>
     </>
   )
 }
