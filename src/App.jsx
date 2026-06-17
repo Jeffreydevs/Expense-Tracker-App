@@ -72,6 +72,27 @@ async function handleDeleteExpenses(id) {
     return total + Number(expense.amount)
   }, 0)
 
+  const averageExpense = expenses.length > 0 ? totalSpent / expenses.length: 0;
+
+  const highestExpense = expenses.length > 0
+    ? Math.max(...expenses.map(expense => Number(expense.amount)))
+    : 0;
+
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const thisMonthSpent = expenses
+    .filter((expense) => {
+      const expenseDate = new Date(expense.date);
+
+      return (
+        expenseDate.getMonth() === currentMonth &&
+        expenseDate.getFullYear() === currentYear
+      );
+    })
+    .reduce((total, expense) => {
+      return total + Number(expense.amount);
+    }, 0);
+
   const filteredExpenses = expenses
     .filter((expense) => {
       const matchesSearch = expense.name.toLowerCase().includes(search.toLowerCase())
@@ -132,12 +153,21 @@ async function handleDeleteExpenses(id) {
 
         <div className="summary-grid" aria-label="Expense summary">
           <article className="summary-card">
-            <span>Total expenses</span>
-            <strong>{expenses.length}</strong>
+            <span>This Month</span>
+            <strong>${thisMonthSpent.toFixed(2)}</strong>
           </article>
           <article className="summary-card highlight">
             <span>Total spent</span>
             <strong>${totalSpent.toFixed(2)}</strong>
+          </article>
+          <article className="summary-card">
+            <span>Average Expense</span>
+            <strong>${averageExpense.toFixed(2)}</strong>
+          </article>
+
+          <article className="summary-card">
+            <span>Highest Expense</span>
+            <strong>${highestExpense}</strong>
           </article>
         </div>
       </section>
