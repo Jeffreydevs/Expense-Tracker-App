@@ -4,7 +4,7 @@ SPENDIFI is a modern expense tracker built with React. It helps users add, edit,
 
 ## Live Demo
 
-[https://spendifi.netlify.app/](https://spendifi.netlify.app/)
+[https://spendifi.vercel.app/](https://spendifi.vercel.app/)
 
 ## Features
 
