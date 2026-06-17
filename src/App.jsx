@@ -5,6 +5,7 @@ import Register from "./Register"
 import Login from "./Login"
 
 function App() {
+  const token = localStorage.getItem("token");
   const [expenses, setExpenses] = useState([])
   const [name, setName] = useState("")
   const [amount, setAmount] = useState("")
@@ -107,10 +108,20 @@ async function handleDeleteExpenses(id) {
     setEditId(expense._id)
   }
 
+  if (!token) {
+  return <Login />;
+  }
+
+  function handleLogout() {
+  localStorage.removeItem("token");
+  window.location.reload();
+  }
+
   return (
     <>
     {/* <Login /> */}
     {/* <Register /> */}
+    <button onClick={handleLogout}> Logout </button>
     <main className="app-shell">
       <section className="hero-panel">
         <div>

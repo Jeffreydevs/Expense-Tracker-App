@@ -11,7 +11,7 @@ function Login() {
     localStorage.setItem("token", response.data.token);
     alert("Login successful");
     } 
-    catch (error) {alert(error.response.data.message);}
+    catch (error) { alert(error.response?.data?.message || "Something went wrong"); }
    }
 
   return (
